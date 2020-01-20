@@ -3,6 +3,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: heketi
+  namespace: glusterfs
   labels:
     glusterfs: heketi-service
     heketi: service
@@ -15,18 +16,26 @@ spec:
   - name: heketi
     port: 8080
     targetPort: 8080
+
 ---
+
 kind: Deployment
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 metadata:
   name: heketi
+  namespace: glusterfs
   labels:
     glusterfs: heketi-deployment
     heketi: deployment
   annotations:
     description: Defines how to deploy Heketi
 spec:
+  selector:
+    matchLabels:
+      glusterfs: heketi-pod
   replicas: 1
+  strategy:
+    type: Recreate
   template:
     metadata:
       name: heketi
@@ -41,9 +50,15 @@ spec:
         name: heketi
         env:
         - name: HEKETI_USER_KEY
-          value: ${HEKETI_USER_KEY}
+          valueFrom:
+            secretKeyRef:
+              name: heketi
+              key: user_key
         - name: HEKETI_ADMIN_KEY
-          value: ${HEKETI_ADMIN_KEY}
+          valueFrom:
+            secretKeyRef:
+              name: heketi
+              key: admin_key
         - name: HEKETI_EXECUTOR
           value: ${HEKETI_EXECUTOR}
         - name: HEKETI_FSTAB

@@ -1,14 +1,19 @@
 ---
 kind: DaemonSet
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 metadata:
   name: glusterfs
+  namespace: glusterfs
   labels:
     glusterfs: daemonset
   annotations:
     description: GlusterFS DaemonSet
     tags: glusterfs
 spec:
+  selector:
+    matchLabels:
+      glusterfs: pod
+      glusterfs-node: pod
   template:
     metadata:
       name: glusterfs
