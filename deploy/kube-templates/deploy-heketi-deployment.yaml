@@ -47,15 +47,9 @@ spec:
         name: deploy-heketi
         env:
         - name: HEKETI_USER_KEY
-          valueFrom:
-            secretKeyRef:
-              name: heketi
-              key: user_key
+          value: ${HEKETI_USER_KEY}
         - name: HEKETI_ADMIN_KEY
-          valueFrom:
-            secretKeyRef:
-              name: heketi
-              key: admin_key
+          value: ${HEKETI_ADMIN_KEY}
         - name: HEKETI_EXECUTOR
           value: ${HEKETI_EXECUTOR}
         - name: HEKETI_FSTAB
